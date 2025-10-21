@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -22,5 +23,11 @@ class ProductController extends Controller
 
         $product = Product::create($request->all());
         return response()->json($product, 201);
+    }
+
+    public function show($id)
+    {
+        $category = ProductCategory::with('products')->find($id);
+        return response()->json($category);
     }
 }
