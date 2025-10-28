@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,3 +9,4 @@ Route::get('/', function () {
 });
 
 Route::get('/welcome', [WelcomeController::class, 'index']);
+Route::get('/books', [BookController::class,'index'])->name('books.index');
