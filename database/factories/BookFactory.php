@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Authors;
+use App\Models\Author;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Books>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Book>
  */
-class BooksFactory extends Factory
+class BookFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +17,8 @@ class BooksFactory extends Factory
      */
     public function definition(): array
     {
-        $authorId = Authors::inRandomOrder()->value('id');
-        
+        $authorId = Author::inRandomOrder()->value('id');
+
         return [
             'title' => $this->faker->sentence(3),
             'author' => $this->faker->name(),
