@@ -9,4 +9,3 @@ Route::get('/', function () {
 });
 
 Route::get('/welcome', [WelcomeController::class, 'index']);
-Route::get('/books', [BookController::class,'index'])->name('books.index');
