@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Exception;
 
 class ProductCategoryController extends Controller
 {
@@ -13,8 +14,20 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        $categories = ProductCategory::all();
-        return response()->json($categories);
+        try {
+            $category = ProductCategory::with('products.variants')->get();
+
+            return response()->json([
+                'message' => 'Kategori produk berhasil ditampilkan !!!',
+                'data'=> $category
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menampilkan kategori produk !!!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -22,8 +35,17 @@ class ProductCategoryController extends Controller
      */
     public function create()
     {
-        // Usually not used in API
-        return response()->json(['message' => 'Not implemented'], 501);
+        try {
+            return response()->json([
+                'message' => 'Route Create Siap Digunakan !!!'
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Terjadi Kesalahan pada create: '
+                . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -31,13 +53,24 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'description' => 'nullable|string',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'required|string'
+            ]);
 
-        $productCategory = ProductCategory::create($validatedData);
-        return response()->json($productCategory, 201);
+            $category = ProductCategory::create($validatedData);
+            return response()->json([
+                'message' => 'Kategori produk berhasil ditambahkan !!!',
+                'data' => $category
+            ], 201);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menambahkan kategori produk !!!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -45,11 +78,20 @@ class ProductCategoryController extends Controller
      */
     public function show(string $id)
     {
-        $productCategory = ProductCategory::find($id);
-        if (!$productCategory) {
-            return response()->json(['message' => 'Product category not found'], 404);
+        try {
+            $category = ProductCategory::with('products.variants')->findOrFail($id);
+
+            return response()->json([
+                'message' => 'Kategori produk pilihan berhasil ditampilkan !!!',
+                'data' => $category
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menampilkan kategori produk !!!',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        return response()->json($productCategory);
     }
 
     /**
@@ -57,8 +99,20 @@ class ProductCategoryController extends Controller
      */
     public function edit(string $id)
     {
-        // Usually not used in API
-        return response()->json(['message' => 'Not implemented'], 501);
+        try {
+            $category = ProductCategory::findOrFail($id);
+
+            return response()->json([
+                'message' => 'Route edit siap digunakan !!!',
+                'data' => $category
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan pada edit: '
+                . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -66,18 +120,26 @@ class ProductCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $productCategory = ProductCategory::find($id);
-        if (!$productCategory) {
-            return response()->json(['message' => 'Product category not found'], 404);
+        try {
+            $category = ProductCategory::findOrFail($id);
+
+            $validatedData = $request->validate([
+                'name' => 'nullable|string|max:255',
+                'description' => 'nullable|string'
+            ]);
+
+            $category->update($validatedData);
+            return response()->json([
+                'message' => 'Kategori produk berhasil diupdate !!!',
+                'data' => $category
+        ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Gagal memperbarui kategori produk !!!',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $validatedData = $request->validate([
-            'name' => 'sometimes|required|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        $productCategory->update($validatedData);
-        return response()->json($productCategory);
     }
 
     /**
@@ -85,11 +147,19 @@ class ProductCategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $productCategory = ProductCategory::find($id);
-        if (!$productCategory) {
-            return response()->json(['message' => 'Product category not found'], 404);
+        try {
+            $category = ProductCategory::findOrFail($id);
+
+            $category->delete();
+            return response()->json([
+                'message' => 'Kategori produk berhasil dihapus !!!'
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus kategori produk !!!',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        $productCategory->delete();
-        return response()->json(['message' => 'Product category deleted successfully']);
     }
 }
