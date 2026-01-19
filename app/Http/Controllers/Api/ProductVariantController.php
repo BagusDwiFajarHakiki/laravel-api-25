@@ -64,7 +64,7 @@ class ProductVariantController extends Controller
 
             $variant = ProductVariant::create($validatedData);
             return response()->json([
-                'messsge' => 'Varian produk berhasil ditambahkan !!!',
+                'message' => 'Varian produk berhasil ditambahkan !!!',
                 'data' => $variant
             ], 200);
 
